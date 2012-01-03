@@ -2,9 +2,9 @@
 メインロジック
 */
 // フィールドサイズ
-var FIELD_SIZE_X  = 150,
+var FIELD_SIZE_X  = 200,
     FIELD_SIZE_Y  = 150,
-    FIELD_SIZE_Z  = 300;
+    FIELD_SIZE_Z  = 250;
 
 // バーサイズ
 var BAR_SIZE_X  = 56,
@@ -21,7 +21,7 @@ var BLOCK_SIZE_X = 50,
 // ボールスピード
 var BALL_SPEED_X = 6,
     BALL_SPEED_Y = 6,
-    BALL_SPEED_Z = 6;
+    BALL_SPEED_Z = 3;
 
 var TRANS3D_2_2D_XPARAM = 2/Math.sqrt(5),
     TRANS3D_2_2D_YPARAM = 1/Math.sqrt(5);
@@ -68,7 +68,7 @@ var bar = {
             image : null
                     };
 var ball=   {
-            x : 0,
+            x : 50,
             y : 0,
             z           :   60,
             vx          :   BALL_SPEED_X,
@@ -132,6 +132,8 @@ function initGame(){
         
         var trans_x=(x-offsetX)/(2*TRANS3D_2_2D_XPARAM)-(y-offsetY )/(2*TRANS3D_2_2D_YPARAM)-BAR_SIZE_X/2;
         var trans_y=(x-offsetX)/(2*TRANS3D_2_2D_XPARAM)+(y-offsetY )/(2*TRANS3D_2_2D_YPARAM)-BAR_SIZE_Y/2;
+// console.log("trans_x = " + trans_x);
+// console.log("trans_y = " + trans_y);
         cursol.x = trans_x;
         cursol.y = trans_y;
     }
@@ -279,26 +281,43 @@ function draw(){
     //draw  bar
     x = TRANS3D_2_2D_XPARAM * (bar.y + bar.x) + offsetX;
     y = TRANS3D_2_2D_YPARAM * (bar.y - bar.x) - BAR_IMAGE_PADDING + offsetY;
+
     bar.image.setX(x);
     bar.image.setY(y);
     //draw  ball
     
-    x = TRANS3D_2_2D_XPARAM * (ball.y + ball.x) + offsetX;
-    y = TRANS3D_2_2D_YPARAM * (ball.y - ball.x) - ball.z + offsetY;
+    x = 0.5 * (ball.y + ball.x) + offsetX;
+    y = 0.5 * (ball.y - ball.x) - ball.z + offsetY;
+
     {
         var indexX = Math.floor( ball.x/BLOCK_SIZE_X ),
-                indexY = Math.floor( ball.y/BLOCK_SIZE_Y ),
-                indexZ = Math.floor( ball.z/BLOCK_SIZE_Z )-4;
+            indexY = Math.floor( ball.y/BLOCK_SIZE_Y ),
+            indexZ = Math.floor( ball.z/BLOCK_SIZE_Z )-4;
         z = indexY - indexX + 7;
         // z += indexZ >= 0 ? indexZ * (blocks[indexZ][indexX].length + blocks[indexZ].length): -4;
         z += indexZ >= 0 ? indexZ : -4;
     }
+    // x = 100;
+    // y = 100;
+    // z = z + 10;
+// console.log("xxxx = " + x);
+// console.log("yyyy = " + y);
+// console.log("zzzz = " + z);
+// console.log("ball.img.y = " + y);
     ball.image.setX(x);
     ball.image.setY(y);
     ball.image.setZ(z);
 // console.log("x=" + x);
 // console.log("y=" + y);
 // console.log("z=" + z);
+// if(ball.x + BAR_SIZE_X < ball.x){
+//     console.log("x over");
+//     exit();
+// }else if(bar.y > ball.y+BALL_DIAMETER ){
+//     console.log("y over");
+//     console.log("ball.image.z = " + ball.image.getZ());
+//     exit();
+// }
     z = (ball.z > BLOCK_SIZE_Z * 3) ? 1 :
             (bar.x+BAR_SIZE_X < ball.x || bar.y > ball.y+BALL_DIAMETER ) ? ball.image.getZ()+1 : 
             (ball.z < BALL_DIAMETER && (ball.x+BALL_DIAMETER/2 > bar+BAR_SIZE_X || ball.y+BALL_DIAMETER/2 < bar.y)) ? ball.image.getZ()+1:
@@ -308,7 +327,7 @@ function draw(){
     y = TRANS3D_2_2D_YPARAM * (ball.y - ball.x) + offsetY;
     ball.shade.setX(x);
     ball.shade.setY(y);
-    ball.shade.setZ(bar.image.getZ()+1);
+    ball.shade.setZ(bar.image.getZ()+3);
 }
 
 function waiting(){
@@ -372,12 +391,8 @@ function updateBarPosition(){
     x = cursol.x != cursol.old_x ?  cursol.x    : x ;
     y = cursol.y != cursol.old_y ?  cursol.y    : y ;
     //フィールド内に制限
-    x   =   x > FIELD_SIZE_X - BAR_SIZE_X   ?   FIELD_SIZE_X - BAR_SIZE_X   :
-            x < 0                                               ?   0                                                   :
-            x;
-    y   =   y > FIELD_SIZE_Y - BAR_SIZE_Y   ?   FIELD_SIZE_Y - BAR_SIZE_Y   :
-            y < 0                                                   ?   0                                                   :
-            y;
+    // x   =   x > FIELD_SIZE_X - BAR_SIZE_X ? FIELD_SIZE_X - BAR_SIZE_X : x < 0 ? 0 : x;
+    // y   =   y > FIELD_SIZE_Y - BAR_SIZE_Y ? FIELD_SIZE_Y - BAR_SIZE_Y : y < 0 ? 0 : y;
     bar.x = x;
     bar.y = y;
     cursol.old_x = cursol.x;
@@ -390,47 +405,73 @@ function updateBallPosition(){
     x = ball.x + ball.vx;
     y = ball.y + ball.vy;
     z = ball.z + ball.vz;
+
     //壁との当たり判定
-    if(x > FIELD_SIZE_X - BALL_DIAMETER){
-        x = 2*(FIELD_SIZE_X - BALL_DIAMETER)-x;
+    // if(x > FIELD_SIZE_X - BALL_DIAMETER){
+    //     x = 2*(FIELD_SIZE_X - BALL_DIAMETER)-x;
+    //     ball.vx = -ball.vx;
+    if(x > FIELD_SIZE_X ){
+        x = 2*(FIELD_SIZE_X )-x;
         ball.vx = -ball.vx;
-    }else if(x < 0){
-        x = -x;
+console.log("折り返しX");
+    }else if(x < 50){
+console.log("折り返しX = 50");
+        // x = -x;
         ball.vx = -ball.vx;
     }
-    if(y > FIELD_SIZE_Y - BALL_DIAMETER){
-        y = 2*(FIELD_SIZE_Y - BALL_DIAMETER)-y;
+y = 150;
+    if(y > FIELD_SIZE_Y - BALL_DIAMETER - 20){
+console.log("折り返しY");
+        y = 2*(FIELD_SIZE_Y - BALL_DIAMETER - 20)-y;
         ball.vy = -ball.vy;
     }else if(y < 0){
+console.log("折り返しY = 0");
         y = -y;
         ball.vy = -ball.vy;
     }
+
     if(z > FIELD_SIZE_Z){
         z = 2*FIELD_SIZE_Z-z;
         ball.vz = -ball.vz;
     }
+console.log("y=" + y);
+console.log("x= " + x);
+console.log("z= " + z);
+
+
+// y = 0;
+    // if(y - x < 5){
+    //     // 跳ね返り
+    //     yy = y;
+    //     xx = x;
+    //     y = xx;
+    //     x = yy+ 5;
+    //     ball.vx = -ball.vx;
+    //     ball.vy = -ball.vy;
+    // }
+
     //barとの当たり判定
     if(z <= BALL_DIAMETER){
-        switch(checkHitAgainstBar( x, y, z, bar.x, bar.y)){
+        switch(test = checkHitAgainstBar( x, y, z, bar.x, bar.y)){
             case HIT_TOP:
                 z = 2 * BALL_DIAMETER - z;
                 ball.vz = -ball.vz;
                 break;
             case HIT_FRONT:
                 ball.vz = BALL_SPEED_Z*0.85;
-                ball.vy = BALL_SPEED_Y*1.13;
+                ball.vy = BALL_SPEED_Y*1.03;
                 break;
             case HIT_BACK:
                 ball.vz = BALL_SPEED_Z*0.85;
-                ball.vy = -BALL_SPEED_Y*1.13;
+                ball.vy = -BALL_SPEED_Y*1.03;
                 break;
             case HIT_RIGHT:
                 ball.vz = BALL_SPEED_Z*0.85;
-                ball.vx = BALL_SPEED_X*1.13;
+                ball.vx = BALL_SPEED_X*1.03;
                 break;
             case HIT_LEFT:
                 ball.vz = BALL_SPEED_Z*0.85;
-                ball.vx = -BALL_SPEED_X*1.13;
+                ball.vx = -BALL_SPEED_X*1.03;
                 break;
             default:
                 if(z<BALL_DIAMETER/2){
@@ -439,6 +480,7 @@ function updateBallPosition(){
                 }
 
         }
+console.log("HIT = " + test);
     }
 /*    //blockとの当たり判定
     if(z > BLOCK_SIZE_Z*3){
@@ -500,9 +542,9 @@ function updateBallPosition(){
     //     z = 2*FIELD_SIZE_Z-z;
     //     ball.vz = -ball.vz;
     // }
-console.log(ball.vx);
-console.log(ball.vy);
-console.log(ball.vz);
+// console.log(ball.vx);
+// console.log(ball.vy);
+// console.log(ball.vz);
 
     ball.x = x;
     ball.y = y;
@@ -596,21 +638,22 @@ function checkHitAgainstBar( ball_x, ball_y, ball_z, bar_x, bar_y ){
     if(ball_z<BALL_DIAMETER*0.55){
         return 0;
     }
+
     if(ball_x >= bar_x - BALL_DIAMETER/2 
-        &&  ball_x <= bar_x + BAR_SIZE_X    - BALL_DIAMETER/2
+        &&  ball_x <= bar_x + BAR_SIZE_X - BALL_DIAMETER/2
         && ball_y >= bar_y - BALL_DIAMETER/2 
         &&  ball_y <= bar_y + BAR_SIZE_Y - BALL_DIAMETER/2
         ){
         return HIT_TOP;
     }
     if(ball_x >= bar_x - BALL_DIAMETER/2 
-        &&  ball_x <= bar_x + BAR_SIZE_X    - BALL_DIAMETER/2
+        &&  ball_x <= bar_x + BAR_SIZE_X - BALL_DIAMETER/2
         && BALL_RADIUS_2 >= poweredDistance( bar_y + BAR_SIZE_Y, 0, ball_y + BALL_DIAMETER/2, ball_z - BALL_DIAMETER/2 )
         ){
         return HIT_FRONT;
     }
     if(ball_x >= bar_x - BALL_DIAMETER/2 
-        &&  ball_x <= bar_x + BAR_SIZE_X    - BALL_DIAMETER/2
+        &&  ball_x <= bar_x + BAR_SIZE_X - BALL_DIAMETER/2
         && BALL_RADIUS_2 >= poweredDistance( bar_y, 0, ball_y + BALL_DIAMETER/2, ball_z - BALL_DIAMETER/2 )
         ){
         return HIT_BACK;
