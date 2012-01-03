@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width, maximum-scale=1.0  user-scalable=no, initial-scale=1.0">
+<script type="text/javascript" src="blockbreaker_files/blockbreaker.js"></script>
+<script type="text/javascript" src="blockbreaker_files/imgobj.js"></script>
+<style>
+  body,html{
+    margin  : 0;
+    padding : 0;
+  }
+/*  body{
+    background-image : url("background_.png");
+    background-repeat : no-repeat;
+    background-position  : 400px -120px;
+  }
+  p{
+    margin: 0 0 1em;
+    padding: 0;
+  }
+  h1{
+    color: #336;
+    margin : 10px 0 5px;
+    padding: 10px 0;
+  }
+  h2{
+    font: 200% "‚l‚r ‚oƒSƒVƒbƒN",serif;
+    color: #669;
+    margin : 10px 0 5px;
+    padding: 10px 0;
+  }
+  ul{
+    list-style-type: square;
+  }
+*/  li{
+    font:150% "‚l‚r ‚oƒSƒVƒbƒN",serif;
+    list-style: none;
+  }
+  #explanation{
+    margin: 5em 0.5em 0;
+    padding: 5px;
+    width : 350px;
+    border: 1px solid #336;
+  }
+/*perspective 奥行きの設定*/
+#contents{ width:100%; height:80% ; position:relative;
+  -webkit-perspective: 200;
+  -webkit-perspective-origin: 50% 50%;
+  width:300px;
+  height:300px;
+  position:relative;
+  /*left:300px;*/
+}
+#contents img{ 
+  width:300px;
+  height:300px;
+  border:solid 1px #000;
+  opacity:0.5;
+  /*画像を同じ位置に重ねる*/
+  position: absolute;
+  top: 0px;
+  left: 0px;
+}
+
+
+/*画像それぞれの奥行き設定*/
+#img00{ 
+  -webkit-transform:
+    translate3d(-150px, 0px, 0px)
+    rotate3d(0, 1, 0, 90deg)
+    translate3d(150px, 0px, 0px);
+}
+#img01{ 
+  -webkit-transform:
+    translate3d(150px, 0px, 0px)
+    rotate3d(0, 1, 0, -90deg)
+    translate3d(-150px, 0px, 0px);
+}
+#img02{ 
+  -webkit-transform:
+    translate3d(0px, -150px, 0px)
+    rotate3d(1, 0, 0, -90deg)
+    translate3d(0px, 150px, 0px);
+}
+#img03{ 
+  -webkit-transform:
+    translate3d(0px, 150px, 0px)
+    rotate3d(1, 0, 0, 90deg)
+    translate3d(0px, -150px, 0px);
+}
+#img04{ 
+  -webkit-transform: 
+    translate3d(0px ,0px ,-300px);
+}
+</style>
+</head>
+<body>
+<script>
+initGame();
+// var front = new createImage("front_t.png",359,610,400,-120,100);
+</script>
+<div id="contents">
+    <ul>
+        <li><img src="./スマフォの touch events で奥行きを操作_files/chrome.png" width="100" height="100" alt="" id="img00"></li>
+        <li><img src="./スマフォの touch events で奥行きを操作_files/firefox.png" width="100" height="100" alt="" id="img01"></li>
+        <li><img src="./スマフォの touch events で奥行きを操作_files/ie.png" width="100" height="100" alt="" id="img02"></li>
+        <li><img src="./スマフォの touch events で奥行きを操作_files/opera.png" width="100" height="100" alt="" id="img03"></li>
+        <li><img src="./スマフォの touch events で奥行きを操作_files/safari.png" width="100" height="100" alt="" id="img04"></li>
+    </ul>
+</div>
+</body></html>
